@@ -32,6 +32,7 @@
 
             var aPositionLoc = gl.getAttribLocation(shaderProg, "a_position");
             var uPointSizeLoc = gl.getUniformLocation(shaderProg, "uPointSize");
+            var uColor = gl.getUniformLocation(shaderProg, "uColor"); // location da uniform de cor no shader
 
             gl.useProgram(null);
 
@@ -44,6 +45,9 @@
 
             gl.useProgram(shaderProg);
             gl.uniform1f(uPointSizeLoc, 50.0);
+
+            var uniformColor = new Float32Array([1.0, 1.0, 0.0]); // Vetor de 3 floats para a cor uniforme
+            gl.uniform3fv(uColor, uniformColor); // Passando o vetor de cores para a uniform
 
             gl.bindBuffer(gl.ARRAY_BUFFER, bufVerts);
             gl.enableVertexAttribArray(aPositionLoc);
@@ -59,18 +63,22 @@
 
     <script id="vertex_shader" type="x-shader/x-fregment">#version 300 es
         in vec3 a_position;
+        uniform vec3 uColor;
+        out vec3 myColor;
         uniform float uPointSize;
         void main(void){
             gl_PointSize = uPointSize;
             gl_Position = vec4(a_position, 1.0);
+            myColor = uColor;
         }
     </script>
 
     <script id="fragment_shader" type="x-shader/x-fregment">#version 300 es
         precision mediump float;
         out vec4 finalColor;
+        in vec3 myColor;
         void main(void){
-            finalColor = vec4(0.0, 0.0, 0.0, 1.0);
+            finalColor = vec4(myColor, 1.0);
         }
     </script>
 
